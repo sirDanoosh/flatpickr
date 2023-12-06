@@ -1,12 +1,12 @@
-import * as fs from "fs-extra";
 import { exec as execCommand } from "child_process";
+import * as fs from "fs-extra";
 
 import glob from "glob";
 
-import terser from "terser";
+import stylusAutoprefixer from "autoprefixer-stylus";
 import chokidar from "chokidar";
 import stylus from "stylus";
-import stylusAutoprefixer from "autoprefixer-stylus";
+import terser from "terser";
 
 import * as rollup from "rollup";
 
@@ -31,7 +31,7 @@ const customModuleNames: Record<string, string> = {
 
 const watchers: chokidar.FSWatcher[] = [];
 
-function logErr(e: Error | string) {
+function logErr(e: Error | string | unknown) {
   console.error(e);
 }
 
@@ -49,7 +49,7 @@ async function readFileAsync(path: string): Promise<string> {
     return buf.toString();
   } catch (e) {
     logErr(e);
-    return e.toString();
+    return (e as string | Error).toString();
   }
 }
 

@@ -1,7 +1,7 @@
+import { DayElement, Instance } from "../../types/instance";
 import { Plugin } from "../../types/options";
-import { Instance, DayElement } from "../../types/instance";
-import { monthToStr } from "../../utils/formatting";
 import { clearNode, getEventTarget } from "../../utils/dom";
+import { monthToStr } from "../../utils/formatting";
 
 export interface Config {
   shorthand: boolean;
@@ -74,13 +74,13 @@ function monthSelectPlugin(pluginConfig?: Partial<Config>): Plugin {
       for (let i = 0; i < 12; i++) {
         const month = fp.createDay(
           "flatpickr-monthSelect-month",
-          new Date(fp.currentYear, i),
+          new fp.l10n.date(fp.currentYear, i),
           0,
           i
         );
         if (
-          month.dateObj.getMonth() === new Date().getMonth() &&
-          month.dateObj.getFullYear() === new Date().getFullYear()
+          month.dateObj.getMonth() === new fp.l10n.date().getMonth() &&
+          month.dateObj.getFullYear() === new fp.l10n.date().getFullYear()
         )
           month.classList.add("today");
         month.textContent = monthToStr(i, config.shorthand, fp.l10n);
@@ -161,7 +161,7 @@ function monthSelectPlugin(pluginConfig?: Partial<Config>): Plugin {
     function selectYear() {
       let selectedDate = fp.selectedDates[0];
       if (selectedDate) {
-        selectedDate = new Date(selectedDate);
+        selectedDate = new fp.l10n.date(selectedDate);
         selectedDate.setFullYear(fp.currentYear);
         if (fp.config.minDate && selectedDate < fp.config.minDate) {
           selectedDate = fp.config.minDate;
@@ -215,7 +215,7 @@ function monthSelectPlugin(pluginConfig?: Partial<Config>): Plugin {
     }
 
     function setMonth(date: Date) {
-      const selectedDate = new Date(
+      const selectedDate = new fp.l10n.date(
         fp.currentYear,
         date.getMonth(),
         date.getDate()
@@ -278,9 +278,11 @@ function monthSelectPlugin(pluginConfig?: Partial<Config>): Plugin {
       }
 
       if (shouldMove) {
-        (self.monthsContainer.children[
-          (12 + index + shifts[e.keyCode]) % 12
-        ] as HTMLElement).focus();
+        (
+          self.monthsContainer.children[
+            (12 + index + shifts[e.keyCode]) % 12
+          ] as HTMLElement
+        ).focus();
       } else if (
         e.keyCode === 13 &&
         self.monthsContainer.contains(document.activeElement)
